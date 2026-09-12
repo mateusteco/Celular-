@@ -1,4 +1,4 @@
-<title>ImportaCel Angola</title>
+<title>ImportaBR Angola</title>
 <style>
   :root{
     --bg:#f6f5f2; --surface:#ffffff; --surface-2:#f0eee9; --border:#e2ddd3;
@@ -56,6 +56,10 @@
   .price .kz{font-size:18px; font-weight:800; color:var(--brand);}
   .price .src{font-size:11.5px; color:var(--text-muted);}
   .origin{font-size:11.5px; color:var(--text-muted); text-decoration:underline; width:fit-content;}
+  .strike{font-size:11.5px; color:var(--text-muted); text-decoration:line-through;}
+  .off{background:var(--danger); color:#fff; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:999px; margin-left:6px;}
+  .disclaimer{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; font-size:12px; color:var(--text-muted); line-height:1.6; margin:22px 0 0;}
+  .synced{font-size:11.5px; color:var(--text-muted); margin:6px 0 18px;}
   .add-btn{margin-top:6px; width:100%; background:var(--brand); color:var(--brand-ink); border:none; border-radius:10px; padding:10px; font-weight:700; font-size:13.5px; cursor:pointer;}
   .add-btn:active{transform:scale(.98);}
   .add-btn.added{background:var(--accent); color:var(--accent-ink);}
@@ -103,16 +107,17 @@
 
 <header class="top">
   <div class="topbar wrap">
-    <div class="brand"><span class="dot"></span> ImportaCel</div>
+    <div class="brand"><span class="dot"></span> ImportaBR</div>
     <button class="cart-btn" id="cartBtn">🛒 Carrinho<span class="badge" id="cartCount" style="display:none">0</span></button>
   </div>
 </header>
 
 <div class="wrap">
   <section class="hero">
-    <h1>Celulares e acessórios do Brasil, entregues em Angola</h1>
-    <p>Escolha os produtos, faça o pedido e o pagamento, envie o comprovante — nós compramos no Brasil e enviamos até você em Angola.</p>
+    <h1>Promoções do Brasil, entregues em Angola</h1>
+    <p>Encomendas de produtos em promoção nos sites oficiais do Brasil, com preço já convertido em Kwanza. Escolha, peça pelo WhatsApp, pague e envie o comprovante — nós compramos e enviamos até você em Angola.</p>
     <div class="rate-pill">💱 Cotação usada: <b>1 R$ = <span id="rateShown"></span> Kz</b> · atualizada pela loja</div>
+    <div class="synced" id="syncedNote"></div>
   </section>
 
   <div class="steps">
@@ -123,14 +128,15 @@
   </div>
 
   <section class="catalog">
-    <h2>Produtos</h2>
-    <p class="sub">Itens de exemplo — envie os links/fotos/preços reais dos produtos que você quer vender para eu substituir por aqui.</p>
+    <h2>Promoções de hoje</h2>
+    <p class="sub">Preços verificados nos sites oficiais e convertidos automaticamente para Kwanza.</p>
     <div class="grid" id="grid"></div>
+    <div class="disclaimer">⚠️ Loja independente de encomendas/importação. Não somos a loja oficial nem afiliados às marcas listadas — compramos os produtos oficialmente no Brasil, pelo preço e disponibilidade do site de origem no momento do pedido, e enviamos para Angola sob encomenda. Preços podem mudar até a confirmação do pagamento.</div>
   </section>
 </div>
 
 <footer>
-  <div>ImportaCel · Pedidos via WhatsApp · Envios Brasil → Angola</div>
+  <div>ImportaBR · Pedidos via WhatsApp · Envios Brasil → Angola</div>
 </footer>
 
 <div class="overlay" id="overlay"></div>
@@ -172,37 +178,45 @@
   var CONFIG = {
     whatsappNumber: "244900000000", // TROCAR pelo número real com código do país, sem + nem espaços
     brlToKz: 180, // cotação BRL -> KZ usada pela loja (câmbio de mercado + sua margem). Ajuste como quiser.
-    paymentInfo: "Após enviar o pedido no WhatsApp, você receberá os dados para pagamento (transferência/Multicaixa Express). Envie o comprovante na própria conversa."
+    paymentInfo: "Após enviar o pedido no WhatsApp, você receberá os dados para pagamento (transferência/Multicaixa Express). Envie o comprovante na própria conversa.",
+    pricesCheckedAt: "12/09/2026" // atualizado automaticamente a cada sincronização
   };
 
+  // Produtos atuais em promoção no site oficial da Wepink (wepink.com.br).
+  // Esta lista é sincronizada periodicamente por Claude com o site oficial —
+  // sempre que a promoção mudar lá, ela é atualizada aqui também.
   var PRODUCTS = [
-    { id:"p1", name:"Smartphone Modelo A 128GB", icon:"📱", priceBRL:1899, tag:"Exemplo", link:"" },
-    { id:"p2", name:"Smartphone Modelo B 256GB", icon:"📱", priceBRL:2599, tag:"Exemplo", link:"" },
-    { id:"p3", name:"Fone Bluetooth TWS", icon:"🎧", priceBRL:189, tag:"Exemplo", link:"" },
-    { id:"p4", name:"Carregador Turbo 33W", icon:"🔌", priceBRL:99, tag:"Exemplo", link:"" },
-    { id:"p5", name:"Capinha + Película", icon:"🛡️", priceBRL:49, tag:"Exemplo", link:"" },
-    { id:"p6", name:"Power Bank 10000mAh", icon:"🔋", priceBRL:159, tag:"Exemplo", link:"" }
+    { id:"p1", name:"Pure Pear – Desodorante Colônia 100ml", icon:"🌸", source:"Wepink", priceBRL:84.90, originalBRL:329.00, link:"https://www.wepink.com.br" },
+    { id:"p2", name:"Body Splash Obsessed Lovely 200ml", icon:"💦", source:"Wepink", priceBRL:33.90, originalBRL:115.00, link:"https://www.wepink.com.br" },
+    { id:"p3", name:"Body Cream Heaven Blue Hidratante 200ml", icon:"🧴", source:"Wepink", priceBRL:35.90, originalBRL:115.00, link:"https://www.wepink.com.br" },
+    { id:"p4", name:"Booster Repair – Óleo Capilar 30ml", icon:"💧", source:"Wepink", priceBRL:46.90, originalBRL:129.00, link:"https://www.wepink.com.br" }
   ];
   // ---------------------------------------------------------------------------------
 
   function kz(brl){ return Math.round(brl * CONFIG.brlToKz).toLocaleString("pt-PT"); }
   document.getElementById("rateShown").textContent = CONFIG.brlToKz.toLocaleString("pt-PT");
   document.getElementById("payBox").textContent = CONFIG.paymentInfo;
+  document.getElementById("syncedNote").textContent = "🔄 Preços verificados no site oficial em " + CONFIG.pricesCheckedAt;
 
   var cart = {};
-  try{ cart = JSON.parse(localStorage.getItem("importacel_cart")||"{}"); }catch(e){ cart = {}; }
-  function saveCart(){ try{ localStorage.setItem("importacel_cart", JSON.stringify(cart)); }catch(e){} }
+  try{ cart = JSON.parse(localStorage.getItem("importabr_cart")||"{}"); }catch(e){ cart = {}; }
+  function saveCart(){ try{ localStorage.setItem("importabr_cart", JSON.stringify(cart)); }catch(e){} }
 
   var grid = document.getElementById("grid");
   PRODUCTS.forEach(function(p){
+    var off = p.originalBRL ? Math.round((1 - p.priceBRL / p.originalBRL) * 100) : 0;
     var card = document.createElement("div");
     card.className = "card";
     card.innerHTML =
-      '<div class="thumb"><span class="tag">'+p.tag+'</span>'+p.icon+'</div>'+
+      '<div class="thumb"><span class="tag">'+(p.source||"Promoção")+'</span>'+p.icon+'</div>'+
       '<div class="body">'+
         '<h3>'+p.name+'</h3>'+
-        (p.link ? '<a class="origin" href="'+p.link+'" target="_blank" rel="noopener">Ver produto original</a>' : '') +
-        '<div class="price"><span class="kz">Kz '+kz(p.priceBRL)+'</span><span class="src">ref. R$ '+p.priceBRL.toLocaleString("pt-BR")+'</span></div>'+
+        (p.link ? '<a class="origin" href="'+p.link+'" target="_blank" rel="noopener">Ver no site oficial</a>' : '') +
+        '<div class="price">'+
+          (p.originalBRL ? '<span class="strike">de R$ '+p.originalBRL.toLocaleString("pt-BR")+'</span>' : '') +
+          '<span class="kz">Kz '+kz(p.priceBRL)+' '+(off>0?'<span class="off">-'+off+'%</span>':'')+'</span>'+
+          '<span class="src">ref. R$ '+p.priceBRL.toLocaleString("pt-BR")+'</span>'+
+        '</div>'+
         '<button class="add-btn" data-id="'+p.id+'">Adicionar ao carrinho</button>'+
       '</div>';
     grid.appendChild(card);
@@ -294,7 +308,7 @@
       return "• " + p.name + " x" + qty + " — Kz " + kz(p.priceBRL * qty);
     });
 
-    var msg = "Olá! Quero fazer um pedido na ImportaCel:\n\n" +
+    var msg = "Olá! Quero fazer um pedido na ImportaBR:\n\n" +
       lines.join("\n") +
       "\n\nTotal: Kz " + kz(totalBRL) +
       "\n\nNome: " + name +
