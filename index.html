@@ -1,0 +1,323 @@
+<title>ImportaCel Angola</title>
+<style>
+  :root{
+    --bg:#f6f5f2; --surface:#ffffff; --surface-2:#f0eee9; --border:#e2ddd3;
+    --text:#211f1c; --text-muted:#6b6558; --brand:#c8102e; --brand-ink:#ffffff;
+    --accent:#0f7a4d; --accent-ink:#ffffff; --danger:#c8102e; --shadow:0 8px 24px rgba(30,25,15,.08);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161412; --surface:#211e1a; --surface-2:#2a2622; --border:#3a352e;
+      --text:#f3f0ea; --text-muted:#a9a294; --brand:#ff5d6c; --brand-ink:#1a0508;
+      --accent:#3ddc97; --accent-ink:#062017; --shadow:0 8px 28px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161412; --surface:#211e1a; --surface-2:#2a2622; --border:#3a352e;
+    --text:#f3f0ea; --text-muted:#a9a294; --brand:#ff5d6c; --brand-ink:#1a0508;
+    --accent:#3ddc97; --accent-ink:#062017; --shadow:0 8px 28px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; padding-bottom:80px;}
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+
+  header.top{position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:14px 20px; gap:12px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px;}
+  .brand .dot{width:10px; height:10px; border-radius:50%; background:var(--brand);}
+  .cart-btn{position:relative; display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; color:var(--text); font-size:14px;}
+  .cart-btn:hover{border-color:var(--brand);}
+  .badge{position:absolute; top:-6px; right:-6px; background:var(--brand); color:var(--brand-ink); font-size:11px; font-weight:800; border-radius:999px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; padding:0 4px;}
+
+  .hero{padding:36px 0 20px;}
+  .hero h1{font-size:clamp(24px,4vw,34px); margin:0 0 8px; line-height:1.15;}
+  .hero p{color:var(--text-muted); max-width:620px; margin:0 0 16px; font-size:15px; line-height:1.55;}
+  .rate-pill{display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:8px 14px; font-size:13px; color:var(--text-muted);}
+  .rate-pill b{color:var(--text);}
+
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0 8px;}
+  @media (max-width:700px){.steps{grid-template-columns:repeat(2,1fr);}}
+  .step{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; font-size:13px; color:var(--text-muted);}
+  .step .n{width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-bottom:8px;}
+  .step strong{color:var(--text); display:block; margin-bottom:2px; font-size:13.5px;}
+
+  section.catalog{padding:28px 0 40px;}
+  .catalog h2{font-size:19px; margin:0 0 4px;}
+  .catalog .sub{color:var(--text-muted); font-size:13.5px; margin:0 0 18px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow);}
+  .thumb{aspect-ratio:1/1; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:44px; color:var(--text-muted); position:relative;}
+  .thumb .tag{position:absolute; top:8px; left:8px; background:var(--accent); color:var(--accent-ink); font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;}
+  .card .body{padding:14px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .card h3{font-size:14.5px; margin:0; line-height:1.3; min-height:2.6em;}
+  .price{display:flex; flex-direction:column; gap:2px; margin-top:auto;}
+  .price .kz{font-size:18px; font-weight:800; color:var(--brand);}
+  .price .src{font-size:11.5px; color:var(--text-muted);}
+  .origin{font-size:11.5px; color:var(--text-muted); text-decoration:underline; width:fit-content;}
+  .add-btn{margin-top:6px; width:100%; background:var(--brand); color:var(--brand-ink); border:none; border-radius:10px; padding:10px; font-weight:700; font-size:13.5px; cursor:pointer;}
+  .add-btn:active{transform:scale(.98);}
+  .add-btn.added{background:var(--accent); color:var(--accent-ink);}
+
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40; display:none;}
+  .overlay.open{display:block;}
+  .panel{position:fixed; top:0; right:0; height:100%; width:min(420px,100%); background:var(--bg); z-index:41; box-shadow:-12px 0 30px rgba(0,0,0,.25); transform:translateX(100%); transition:transform .25s ease; display:flex; flex-direction:column;}
+  .panel.open{transform:translateX(0);}
+  .panel-head{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border);}
+  .panel-head h3{margin:0; font-size:16px;}
+  .close-btn{background:none; border:none; font-size:20px; color:var(--text-muted); cursor:pointer; line-height:1;}
+  .panel-body{flex:1; overflow-y:auto; padding:14px 18px;}
+  .empty{color:var(--text-muted); font-size:13.5px; text-align:center; margin-top:40px;}
+  .cart-item{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);}
+  .cart-item .thumb-sm{width:48px; height:48px; border-radius:8px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;}
+  .cart-item .info{flex:1; min-width:0;}
+  .cart-item .info .nm{font-size:13px; font-weight:600; margin-bottom:2px;}
+  .cart-item .info .pr{font-size:12.5px; color:var(--text-muted);}
+  .qty{display:flex; align-items:center; gap:6px; margin-top:6px;}
+  .qty button{width:22px; height:22px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; font-size:13px; line-height:1;}
+  .qty span{font-size:13px; min-width:16px; text-align:center;}
+  .rm{background:none; border:none; color:var(--text-muted); font-size:11.5px; text-decoration:underline; cursor:pointer; margin-left:8px;}
+  .panel-foot{border-top:1px solid var(--border); padding:16px 18px; display:flex; flex-direction:column; gap:10px;}
+  .total-row{display:flex; justify-content:space-between; font-size:15px; font-weight:800;}
+  .checkout-btn{background:var(--accent); color:var(--accent-ink); border:none; border-radius:10px; padding:13px; font-weight:800; font-size:14px; cursor:pointer;}
+  .checkout-btn:disabled{opacity:.5; cursor:not-allowed;}
+
+  .modal{position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center; padding:16px;}
+  .modal.open{display:flex;}
+  .modal .card2{background:var(--surface); border:1px solid var(--border); border-radius:16px; max-width:440px; width:100%; max-height:88vh; overflow-y:auto; padding:22px; box-shadow:var(--shadow);}
+  .card2 h3{margin:0 0 6px; font-size:17px;}
+  .card2 p.hint{color:var(--text-muted); font-size:12.5px; margin:0 0 16px; line-height:1.5;}
+  label{display:block; font-size:12.5px; font-weight:700; margin-bottom:6px; color:var(--text-muted);}
+  input, textarea{width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px; color:var(--text); margin-bottom:14px; font-family:inherit;}
+  input:focus, textarea:focus{outline:2px solid var(--brand); outline-offset:1px;}
+  .pay-box{background:var(--surface-2); border:1px dashed var(--border); border-radius:10px; padding:12px; font-size:12.5px; color:var(--text-muted); margin-bottom:16px; line-height:1.6;}
+  .modal-actions{display:flex; gap:10px;}
+  .btn-secondary{flex:1; background:none; border:1px solid var(--border); color:var(--text); border-radius:10px; padding:11px; font-weight:700; font-size:13.5px; cursor:pointer;}
+  .btn-primary{flex:1; background:#25d366; color:#06210f; border:none; border-radius:10px; padding:11px; font-weight:800; font-size:13.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;}
+
+  footer{border-top:1px solid var(--border); padding:26px 20px; color:var(--text-muted); font-size:12.5px; text-align:center;}
+  .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg); padding:10px 18px; border-radius:999px; font-size:13px; font-weight:600; opacity:0; transition:all .25s ease; z-index:60; pointer-events:none;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+
+<header class="top">
+  <div class="topbar wrap">
+    <div class="brand"><span class="dot"></span> ImportaCel</div>
+    <button class="cart-btn" id="cartBtn">🛒 Carrinho<span class="badge" id="cartCount" style="display:none">0</span></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <h1>Celulares e acessórios do Brasil, entregues em Angola</h1>
+    <p>Escolha os produtos, faça o pedido e o pagamento, envie o comprovante — nós compramos no Brasil e enviamos até você em Angola.</p>
+    <div class="rate-pill">💱 Cotação usada: <b>1 R$ = <span id="rateShown"></span> Kz</b> · atualizada pela loja</div>
+  </section>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><strong>Escolha</strong>Adicione os produtos ao carrinho</div>
+    <div class="step"><div class="n">2</div><strong>Peça no WhatsApp</strong>Envie seus dados e o pedido</div>
+    <div class="step"><div class="n">3</div><strong>Pague e envie o comprovante</strong>Pelo próprio WhatsApp</div>
+    <div class="step"><div class="n">4</div><strong>Nós entregamos</strong>Compramos no Brasil e enviamos p/ Angola</div>
+  </div>
+
+  <section class="catalog">
+    <h2>Produtos</h2>
+    <p class="sub">Itens de exemplo — envie os links/fotos/preços reais dos produtos que você quer vender para eu substituir por aqui.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+</div>
+
+<footer>
+  <div>ImportaCel · Pedidos via WhatsApp · Envios Brasil → Angola</div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="cartPanel">
+  <div class="panel-head">
+    <h3>Seu carrinho</h3>
+    <button class="close-btn" id="closeCart">✕</button>
+  </div>
+  <div class="panel-body" id="cartBody"></div>
+  <div class="panel-foot">
+    <div class="total-row"><span>Total</span><span id="cartTotal">Kz 0</span></div>
+    <button class="checkout-btn" id="goCheckout" disabled>Finalizar pedido</button>
+  </div>
+</aside>
+
+<div class="modal" id="checkoutModal">
+  <div class="card2">
+    <h3>Finalizar pedido</h3>
+    <p class="hint">Preencha seus dados. Vamos abrir o WhatsApp com o resumo do pedido já pronto para enviar.</p>
+    <label for="cName">Nome completo</label>
+    <input id="cName" placeholder="Seu nome">
+    <label for="cPhone">Telefone / WhatsApp (com código do país)</label>
+    <input id="cPhone" placeholder="+244 9XX XXX XXX">
+    <label for="cAddr">Província / Endereço de entrega em Angola</label>
+    <input id="cAddr" placeholder="Ex: Luanda, Talatona...">
+    <div class="pay-box" id="payBox"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancelCheckout">Cancelar</button>
+      <button class="btn-primary" id="sendWhats">📲 Enviar pelo WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // ---------- CONFIG (edite aqui / peça pra Claude editar e republicar) ----------
+  var CONFIG = {
+    whatsappNumber: "244900000000", // TROCAR pelo número real com código do país, sem + nem espaços
+    brlToKz: 180, // cotação BRL -> KZ usada pela loja (câmbio de mercado + sua margem). Ajuste como quiser.
+    paymentInfo: "Após enviar o pedido no WhatsApp, você receberá os dados para pagamento (transferência/Multicaixa Express). Envie o comprovante na própria conversa."
+  };
+
+  var PRODUCTS = [
+    { id:"p1", name:"Smartphone Modelo A 128GB", icon:"📱", priceBRL:1899, tag:"Exemplo", link:"" },
+    { id:"p2", name:"Smartphone Modelo B 256GB", icon:"📱", priceBRL:2599, tag:"Exemplo", link:"" },
+    { id:"p3", name:"Fone Bluetooth TWS", icon:"🎧", priceBRL:189, tag:"Exemplo", link:"" },
+    { id:"p4", name:"Carregador Turbo 33W", icon:"🔌", priceBRL:99, tag:"Exemplo", link:"" },
+    { id:"p5", name:"Capinha + Película", icon:"🛡️", priceBRL:49, tag:"Exemplo", link:"" },
+    { id:"p6", name:"Power Bank 10000mAh", icon:"🔋", priceBRL:159, tag:"Exemplo", link:"" }
+  ];
+  // ---------------------------------------------------------------------------------
+
+  function kz(brl){ return Math.round(brl * CONFIG.brlToKz).toLocaleString("pt-PT"); }
+  document.getElementById("rateShown").textContent = CONFIG.brlToKz.toLocaleString("pt-PT");
+  document.getElementById("payBox").textContent = CONFIG.paymentInfo;
+
+  var cart = {};
+  try{ cart = JSON.parse(localStorage.getItem("importacel_cart")||"{}"); }catch(e){ cart = {}; }
+  function saveCart(){ try{ localStorage.setItem("importacel_cart", JSON.stringify(cart)); }catch(e){} }
+
+  var grid = document.getElementById("grid");
+  PRODUCTS.forEach(function(p){
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="thumb"><span class="tag">'+p.tag+'</span>'+p.icon+'</div>'+
+      '<div class="body">'+
+        '<h3>'+p.name+'</h3>'+
+        (p.link ? '<a class="origin" href="'+p.link+'" target="_blank" rel="noopener">Ver produto original</a>' : '') +
+        '<div class="price"><span class="kz">Kz '+kz(p.priceBRL)+'</span><span class="src">ref. R$ '+p.priceBRL.toLocaleString("pt-BR")+'</span></div>'+
+        '<button class="add-btn" data-id="'+p.id+'">Adicionar ao carrinho</button>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+
+  grid.addEventListener("click", function(e){
+    var btn = e.target.closest(".add-btn");
+    if(!btn) return;
+    var id = btn.dataset.id;
+    cart[id] = (cart[id]||0) + 1;
+    saveCart(); renderCart(); toast("Adicionado ao carrinho");
+    btn.textContent = "Adicionado ✓"; btn.classList.add("added");
+    setTimeout(function(){ btn.textContent = "Adicionar ao carrinho"; btn.classList.remove("added"); }, 1200);
+  });
+
+  var overlay = document.getElementById("overlay");
+  var panel = document.getElementById("cartPanel");
+  function openCart(){ overlay.classList.add("open"); panel.classList.add("open"); }
+  function closeCart(){ overlay.classList.remove("open"); panel.classList.remove("open"); }
+  document.getElementById("cartBtn").addEventListener("click", openCart);
+  document.getElementById("closeCart").addEventListener("click", closeCart);
+  overlay.addEventListener("click", function(){ closeCart(); closeModal(); });
+
+  function productById(id){ return PRODUCTS.filter(function(p){return p.id===id;})[0]; }
+
+  function renderCart(){
+    var body = document.getElementById("cartBody");
+    var ids = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
+    var count = ids.reduce(function(s,id){ return s + cart[id]; }, 0);
+    var countEl = document.getElementById("cartCount");
+    if(count>0){ countEl.style.display="flex"; countEl.textContent = count; } else { countEl.style.display="none"; }
+
+    if(ids.length===0){
+      body.innerHTML = '<div class="empty">Seu carrinho está vazio.<br>Adicione produtos para continuar.</div>';
+      document.getElementById("cartTotal").textContent = "Kz 0";
+      document.getElementById("goCheckout").disabled = true;
+      return;
+    }
+    var totalBRL = 0;
+    body.innerHTML = ids.map(function(id){
+      var p = productById(id); if(!p) return "";
+      var qty = cart[id];
+      totalBRL += p.priceBRL * qty;
+      return '<div class="cart-item">'+
+        '<div class="thumb-sm">'+p.icon+'</div>'+
+        '<div class="info">'+
+          '<div class="nm">'+p.name+'</div>'+
+          '<div class="pr">Kz '+kz(p.priceBRL)+' cada</div>'+
+          '<div class="qty">'+
+            '<button data-act="dec" data-id="'+id+'">−</button>'+
+            '<span>'+qty+'</span>'+
+            '<button data-act="inc" data-id="'+id+'">+</button>'+
+            '<button class="rm" data-act="rm" data-id="'+id+'">remover</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+    document.getElementById("cartTotal").textContent = "Kz " + kz(totalBRL);
+    document.getElementById("goCheckout").disabled = false;
+  }
+
+  document.getElementById("cartBody").addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-act]");
+    if(!btn) return;
+    var id = btn.dataset.id, act = btn.dataset.act;
+    if(act==="inc") cart[id] = (cart[id]||0) + 1;
+    if(act==="dec") cart[id] = Math.max(0, (cart[id]||0) - 1);
+    if(act==="rm") cart[id] = 0;
+    saveCart(); renderCart();
+  });
+
+  var modal = document.getElementById("checkoutModal");
+  function openModal(){ modal.classList.add("open"); overlay.classList.add("open"); }
+  function closeModal(){ modal.classList.remove("open"); if(!panel.classList.contains("open")) overlay.classList.remove("open"); }
+  document.getElementById("goCheckout").addEventListener("click", openModal);
+  document.getElementById("cancelCheckout").addEventListener("click", closeModal);
+
+  document.getElementById("sendWhats").addEventListener("click", function(){
+    var name = document.getElementById("cName").value.trim();
+    var phone = document.getElementById("cPhone").value.trim();
+    var addr = document.getElementById("cAddr").value.trim();
+    if(!name || !phone || !addr){ toast("Preencha nome, telefone e endereço"); return; }
+
+    var ids = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
+    var totalBRL = 0;
+    var lines = ids.map(function(id){
+      var p = productById(id); var qty = cart[id];
+      totalBRL += p.priceBRL * qty;
+      return "• " + p.name + " x" + qty + " — Kz " + kz(p.priceBRL * qty);
+    });
+
+    var msg = "Olá! Quero fazer um pedido na ImportaCel:\n\n" +
+      lines.join("\n") +
+      "\n\nTotal: Kz " + kz(totalBRL) +
+      "\n\nNome: " + name +
+      "\nTelefone: " + phone +
+      "\nEndereço/Província: " + addr +
+      "\n\n(Vou enviar o comprovante de pagamento aqui pelo WhatsApp após combinarmos o pagamento.)";
+
+    var url = "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
+
+    cart = {}; saveCart(); renderCart(); closeModal(); closeCart();
+    toast("Pedido enviado! Confira o WhatsApp.");
+  });
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer;
+  function toast(text){
+    toastEl.textContent = text;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2200);
+  }
+
+  renderCart();
+})();
+</script>
